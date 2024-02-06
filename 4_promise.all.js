@@ -45,4 +45,28 @@ function createUser(name) {
   dataContainer.append(userElement);
 }
 
-getAllUsers(USERS_URL, "GET");
+// getAllUsers(USERS_URL, "GET");
+
+// Задание #2
+
+const getUsersByIds = (ids) => {
+  setLoader();
+  const users = ids.map((id) => fetch(`${USERS_URL}/${id}`));
+  Promise.all(users)
+    .then((responses) => {
+      const result = responses.map((resp) => resp.json());
+      // console.log(result);
+      return Promise.all(result);
+    })
+    .then((users) => {
+      users.forEach((user) => createUser(user.name));
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      setLoader();
+    });
+};
+
+getUsersByIds([5, 6, 2, 1]);
